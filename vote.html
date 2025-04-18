@@ -1,0 +1,55 @@
+
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8" />
+  <title>Vote</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    button { display: block; margin: 10px 0; width: 100%; padding: 10px; font-size: 16px; }
+    .correct { margin-top: 20px; font-weight: bold; color: green; }
+  </style>
+</head>
+<body>
+  <h1>🗳️ Ψήφισε!</h1>
+  <div id="questionText">Φόρτωση...</div>
+  <button onclick="vote('A')" id="btnA"></button>
+  <button onclick="vote('B')" id="btnB"></button>
+  <button onclick="vote('C')" id="btnC"></button>
+  <button onclick="vote('D')" id="btnD"></button>
+  <div class="correct" id="correctAnswer" style="display:none;"></div>
+
+  <script>
+    let active = localStorage.getItem("activeQuestion") || 0;
+    function loadQuestion() {
+      document.getElementById("questionText").textContent = localStorage.getItem("q" + active) || "Καμία ενεργή ερώτηση.";
+      document.getElementById("btnA").textContent = "Α: " + (localStorage.getItem("a" + active) || "");
+      document.getElementById("btnB").textContent = "Β: " + (localStorage.getItem("b" + active) || "");
+      document.getElementById("btnC").textContent = "Γ: " + (localStorage.getItem("c" + active) || "");
+      document.getElementById("btnD").textContent = "Δ: " + (localStorage.getItem("d" + active) || "");
+    }
+
+    function vote(letter) {
+      let key = "votes" + letter;
+      let current = parseInt(localStorage.getItem(key) || "0");
+      localStorage.setItem(key, current + 1);
+      alert("Η ψήφος καταχωρήθηκε!");
+    }
+
+    window.addEventListener("storage", () => {
+      if (localStorage.getItem("showCorrect") === "true") {
+        let correct = localStorage.getItem("correct" + active);
+        document.getElementById("correctAnswer").style.display = "block";
+        document.getElementById("correctAnswer").textContent = "✅ Σωστή απάντηση: " + correct;
+      }
+    });
+
+    if (localStorage.getItem("resetVotes") === "true") {
+      ["A", "B", "C", "D"].forEach(letter => localStorage.setItem("votes" + letter, 0));
+      localStorage.removeItem("resetVotes");
+    }
+
+    loadQuestion();
+  </script>
+</body>
+</html>
