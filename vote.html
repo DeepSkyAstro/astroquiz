@@ -1,0 +1,60 @@
+<!-- vote.html -->
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8" />
+  <title>Ψήφισε την Απάντηση</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; padding: 30px; }
+    button { font-size: 1.2em; margin: 10px; padding: 10px 20px; }
+    #correctMsg { color: green; font-weight: bold; display: none; }
+  </style>
+</head>
+<body>
+  <h2 id="question">Ερώτηση</h2>
+  <div>
+    <button onclick="vote('A')" id="btnA"></button><br/>
+    <button onclick="vote('B')" id="btnB"></button><br/>
+    <button onclick="vote('C')" id="btnC"></button><br/>
+    <button onclick="vote('D')" id="btnD"></button>
+  </div>
+  <div id="correctMsg"></div>
+
+  <script>
+    function loadData() {
+      document.getElementById("question").textContent = localStorage.getItem("question") || "Ερώτηση";
+      document.getElementById("btnA").textContent = "Α: " + (localStorage.getItem("A") || "");
+      document.getElementById("btnB").textContent = "Β: " + (localStorage.getItem("B") || "");
+      document.getElementById("btnC").textContent = "Γ: " + (localStorage.getItem("C") || "");
+      document.getElementById("btnD").textContent = "Δ: " + (localStorage.getItem("D") || "");
+      document.getElementById("correctMsg").style.display = "none";
+    }
+
+    function vote(letter) {
+      let key = "votes" + letter;
+      let current = parseInt(localStorage.getItem(key) || "0");
+      localStorage.setItem(key, current + 1);
+      alert("Η ψήφος σου καταχωρήθηκε!");
+    }
+
+    window.addEventListener("storage", () => {
+      if (localStorage.getItem("showCorrect") === "true") {
+        const correct = localStorage.getItem("correct");
+        document.getElementById("correctMsg").textContent = "✔️ Η σωστή απάντηση ήταν: " + correct;
+        document.getElementById("correctMsg").style.display = "block";
+        localStorage.setItem("showCorrect", "done");
+      }
+      if (localStorage.getItem("resetVotes") === "true") {
+        localStorage.setItem("votesA", "0");
+        localStorage.setItem("votesB", "0");
+        localStorage.setItem("votesC", "0");
+        localStorage.setItem("votesD", "0");
+        localStorage.setItem("resetVotes", "done");
+        loadData();
+      }
+    });
+
+    loadData();
+  </script>
+</body>
+</html>
